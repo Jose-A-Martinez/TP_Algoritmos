@@ -17,7 +17,7 @@ from tabulate import tabulate
 from pwinput import pwinput # para contraseña *
 
 # ---------- Definición Subprogramas---------
-A = 1
+
 
 # Procedimiento para limpiar la pantalla
 def limpiarPantalla():
@@ -333,57 +333,73 @@ def mostrarMenuCeo ():
     print("     c. Volver")
     print ("4) Cerrar sesión")
 
-def crearVuelo(USR,AERO,COD,VUELO):
+
+# Nueva versión adaptada y estructurada de crearVuelo
+import random
+def crearVuelo(USR, AERO, COD, VUELO, PRECIO_VUELOS, ASIENTOS_VUELOS):
     limpiarPantalla()
-    cantidadVuelos = 0
-    mensaje = "Desea ver los vuelos cargados hasta el momento?"
-    if aceptarCancelar(mensaje, "a", "c") == "a" :
+    mensaje = "¿Desea ver los vuelos cargados hasta el momento?"
+    if aceptarCancelar(mensaje, "a", "c") == "a":
         print("Se muestra la lista de vuelos cargados hasta el momento")
-        #verVuelos(USR,AERO,COD,VUELO)
-    else:
-        limpiarPantalla() # SI no quiere que se muestre limpia pantalla y pide cargar
-    cantidadVuelos = 0
-    opc = "a"
-    print("Ingresar los datos del nuevo vuelo: \n")
+        # verVuelos(USR, AERO, COD, VUELO)  # Si tienes esta función, puedes llamarla aquí
+        input("Presione Enter para continuar...")
 
-    busca = False
-    #while cantidadVuelos < 20 and opc == "a":
-    mensaje = "Ingresar el código de aerolínea"
-    codAerolinea = str(input("Ingrese el código de la aerolínea ó D para salir: "))
-    while aceptarCancelar(mensaje, "a", "D") == "a" or cantidadVuelos < 20:
+    limpiarPantalla()
+    print("Ingresar los datos de los nuevos vuelos (máximo 20 por sesión):\n")
+    cantidadCreados = 0
+    pos = 0
+    # Buscar la primera posición libre en el arreglo de vuelos
+    while pos < len(VUELO) and VUELO[pos][0] != "":
+        pos += 1
 
-        #while (buscarAerolinea(codAerolinea, AERO) == True and opc == "a") :
-        while (busca == True or opc == "a") :    
-            if buscarDicotomica(AERO, codAerolinea) == False:
-                limpiarPantalla()
-                print("Código de aerolínea no encontrado. Ingrese un código válido: ")
-                mensaje = "Código de aerolínea no encontrado.\nDesea ingresar un nuevo código de aerolínea?"
-                if aceptarCancelar(mensaje, "a", "c") == "a" :
-                    codAerolinea = str(input("Ingrese el código de la aerolínea: "))
-                    buscarDicotomica(AERO, codAerolinea)
+    continuar = True
+    while cantidadCreados < 20 and pos < len(VUELO) and continuar:
+        codAerolinea = input("Ingrese el código de la aerolínea (o D para salir): ")
+        salir = False
+        if codAerolinea.upper() == "D":
+            salir = True
+        else:
+            while not buscarDicotomica(AERO, codAerolinea) and not salir:
+                print("Código de aerolínea no encontrado.")
+                codAerolinea = input("Ingrese un código válido de aerolínea (o D para salir): ")
+                if codAerolinea.upper() == "D":
+                    salir = True
+        if not salir:
+            origenVuelo = input("Ingrese el origen del vuelo: ")
+            destinoVuelo = input("Ingrese el destino del vuelo: ")
+            fechaSalidaVuelo = input("Ingrese la fecha de salida del vuelo (DD/MM/AAAA): ")
+            horaSalidaVuelo = input("Ingrese la hora de salida del vuelo (HH:MM): ")
+            precioVuelo = float(input("Ingrese el precio del vuelo: "))
 
-            else:
-                limpiarPantalla()
-                print("Código de aerolínea encontrado. Puede continuar con la carga del vuelo.")
-                # Se pide el resto de los datos del vuelo
-                origenVuelo = str(input("Ingrese el origen del vuelo: "))
-                destinoVuelo = str(input("Ingrese el destino del vuelo: "))
-                fechaSalidaVuelo = str(input("Ingrese la fecha de salida del vuelo (DD/MM/AAAA): "))
-                horaSalidaVuelo = str(input("Ingrese la hora de salida del vuelo (HH:MM): "))
-                precioVuelo = float(input("Ingrese el precio del vuelo: "))
-                # Se crea el vuelo y se agrega al arreglo de vuelos
-                print("Vuelo creado exitosamente")
-        mensaje = "Ingresar un nuevo código de ó D para salir: "
-        aceptarCancelar(mensaje, "a", "D")
- # Estructura entidad VUELOS 100 filas 8 columna
-        # codVuelo int              array codigos_vuelos
-        # asientosDisponibles int
-        # codAerolinea STR 5        array vuelos
-        # origenVuelo STR 50
-        # destinoVuelo STR 50
-        # fechaSalidaVuelo STR 10
-        # horaSalidaVuelo STR 5
-        # precioVuelo DECIMAL       array precio_vuelos
+            # Guardar los datos en los arreglos
+            VUELO[pos][0] = codAerolinea
+            VUELO[pos][1] = origenVuelo
+            VUELO[pos][2] = destinoVuelo
+            VUELO[pos][3] = fechaSalidaVuelo
+            VUELO[pos][4] = horaSalidaVuelo
+            PRECIO_VUELOS[pos][0] = precioVuelo
+
+            # Inicializar los 240 asientos con estado aleatorio
+            estados = ["L", "O", "R"]
+            if len(ASIENTOS_VUELOS[pos]) < 240:
+                ASIENTOS_VUELOS[pos] = [""] * 240
+            for asiento in range(240):
+                ASIENTOS_VUELOS[pos][asiento] = random.choice(estados)
+
+            print("Vuelo creado exitosamente.\n")
+            cantidadCreados += 1
+            pos += 1
+
+            # Preguntar si desea cargar otro vuelo
+            if cantidadCreados < 20 and pos < len(VUELO):
+                if aceptarCancelar("¿Desea cargar otro vuelo?", "a", "c") == "c":
+                    continuar = False
+        else:
+            continuar = False
+
+    # Al finalizar, llamar a la función para listar vuelos por aerolínea
+    # ListarVuelosAerolineas()  # Implementa esta función según tu enunciado
+    input("Carga finalizada. Presione Enter para continuar...")
           
 def gestiondeVuelos(USR,AERO,COD,VUELO):
     limpiarPantalla()
