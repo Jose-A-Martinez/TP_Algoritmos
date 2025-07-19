@@ -1,6 +1,6 @@
 # NOTAS IMPORTANTES, antes de entregar buscar todos los "borrar" y quitar del codigo. 
 # Antes de entregar chequear lista de usuarios, dejar 2 para crear. Borrar usuarios ingreso facil "a", "c", "u"
-
+#Prueba a git
 
 
 # TP 2 
@@ -17,6 +17,7 @@ from tabulate import tabulate
 from pwinput import pwinput # para contraseña *
 
 # ---------- Definición Subprogramas---------
+A = 1
 
 # Procedimiento para limpiar la pantalla
 def limpiarPantalla():
