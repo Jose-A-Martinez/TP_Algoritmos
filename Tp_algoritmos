@@ -1,0 +1,644 @@
+# NOTAS IMPORTANTES, antes de entregar buscar todos los "borrar" y quitar del codigo. 
+# Antes de entregar chequear lista de usuarios, dejar 2 para crear. Borrar usuarios ingreso facil "a", "c", "u"
+
+
+
+# TP 2 
+# Grupo 2
+# Integrantes: 
+# Brian Garcia
+# Raul Perez
+# José Martinez
+# Efrain Huarancca
+
+# ---------- Importación de Librerías---------
+import os
+from tabulate import tabulate
+from pwinput import pwinput # para contraseña *
+
+# ---------- Definición Subprogramas---------
+
+# Procedimiento para limpiar la pantalla
+def limpiarPantalla():
+    os.system("cls") 
+# Función para validar opciones Aceptar / cancelar. Y enviar mensaje en la llamada
+def aceptarCancelar(mensaje, opcion1, opcion2):
+    opcion1 = opcion1.upper() #para evitar errores de mayusculas y minusculas en el codigo
+    opcion2 = opcion2.upper()
+    print(f"{mensaje}\n\nIngrese '{opcion1}' para aceptar, '{opcion2}' para cancelar:")
+    opc = str(input())
+    opc = opc.upper()
+    while opcion1!= opc and opcion2!=opc:
+        limpiarPantalla()
+        opc = str(input(f"Opcion inválida.\n{mensaje}, Ingrese '{opcion1}' para aceptar, '{opcion2}' para cancelar:"))
+        opc = opc.upper()
+        
+    return opc
+    
+
+# Función para validar opción ingresada en numeros/letras, con mensaje
+def validarOpcion(mensaje,ini,fin):
+    ini = ini.lower() #para evitar errores de mayusculas y minusculas en el codigo
+    fin = fin.lower()
+    print(f"{mensaje} \n\nIngrese una opción entre {ini} y {fin}: ")
+    #print(f"\n Ingrese una opción entre '{ini}' y '{fin}': ")
+    opc = str(input())
+    opc = opc.lower()
+    while (opc<ini or opc>fin or len(opc)!=1):
+        limpiarPantalla()
+        opc = str(input(f"\nOpción invalida.\nIngrese una opción entre '{ini}' y '{fin}': \n{mensaje} "))
+# VERSION ANTERIOR Función para validar opción ingresada en numeros/letras 
+#def validarOpcion(ini,fin):
+#    #print(f"\n{mensaje} Ingrese una opción entre {ini} y {fin}: ")
+#    print(f"\n Ingrese una opción entre '{ini}' y '{fin}': ")
+#    opc = str(input())
+#    opc = opc.lower()
+#    while (opc<ini or opc>fin or len(opc)!=1):
+#        opc = str(input(f"\nOpción inexistente. Por favor, ingrese una opción entre '{ini}' y '{fin}': "))
+#    limpiarPantalla() #si borra mal quitar
+#    return opc
+    return opc
+
+
+# Procedimiento para contar cantidad de registros en un arreglo
+def contarRegistros(arrerglo):
+    cont = 0
+    # 100 es el maximo de registros definidos en los arreglos del TP. Y se deberian definir largo de 99 y vacios con "". 
+    # Sino ajustar el while
+    while cont < 99 and arrerglo[cont][0]!="": 
+        cont = cont + 1   
+    return cont
+
+# Procedimiento para Ordenar los arreglos descendente
+def ordenar(ARREGLO, CODIGO):
+    posFinal = contarRegistros(ARREGLO)
+    for i in range(posFinal - 1):
+        for j in range(i+1, posFinal):
+            if ARREGLO[i][0].lower() < ARREGLO[j][0].lower():
+                for col in range(4):
+                    aux1 = ARREGLO[i][col]
+                    ARREGLO[i][col] = ARREGLO[j][col]
+                    ARREGLO[j][col] = aux1
+                for col2 in range (2):
+                    aux2 = CODIGO[i][col2]
+                    CODIGO[i][col2] = CODIGO[j][col2]
+                    CODIGO[j][col2] = aux2
+
+# Procedimiento para buscar codigos de aerolineas
+def buscarDicotomica(ARREGLO, COD):
+    inf = 0
+    sup = contarRegistros(ARREGLO)-1
+    med = (sup+inf)//2
+    while inf <= sup and (ARREGLO[med][0].lower() != COD.lower()):
+        if ARREGLO[med][0].lower() > COD.lower():
+            sup = med-1
+        else:
+            inf = med+1
+        med = (sup+inf)//2
+    if ARREGLO[med][0].lower() == COD.lower():
+        return True
+    else:
+        return False
+
+# Procedimiento listarGestionNovedades 
+def mostrarGestionNovedades ():
+    #print ("--- Gestión de Novedades ---\n")
+    #print ("a) Crear novedades")
+    #print ("b) Modificar novedad")
+    #print ("c) Eliminar novedad")
+    #print ("d) Ver novedades")
+    #print ("e) Volver")
+    msj = "--- Gestión de Novedades ---\na) Crear novedades\nb) Modificar novedad\nc) Eliminar novedad\nd) Ver novedades\ne) Volver\n"
+    return msj
+# Procedimiento gestionDeNovedades 
+def gestionDeNovedades ():
+    limpiarPantalla()
+    mensaje = mostrarGestionNovedades()
+    opcionDeNovedades = validarOpcion (mensaje,"a", "e")
+    while opcionDeNovedades != "e":
+        if opcionDeNovedades == "a":
+            enConstruccion ()
+        elif opcionDeNovedades == "b":
+            enConstruccion ()
+        elif opcionDeNovedades == "c":
+            enConstruccion ()
+        elif opcionDeNovedades == "d":
+            enConstruccion ()
+        mensaje = mostrarGestionNovedades()
+        opcionDeNovedades = validarOpcion (mensaje,"a", "e")
+    limpiarPantalla()
+
+# Procedimiento para precargar aerolineas
+def precargarAerolineas(AEROLINEAS): #(Var AEROLINEAS : aerolineas)
+    # codAerolinea = 1
+    AEROLINEAS[0][0] = "1" #Codigo de aerolínea
+    AEROLINEAS[0][1] = "Aerolíneas Argentinas" #nombre de aerolínea
+    AEROLINEAS[0][2] = "AEP"#codigoIATA
+    AEROLINEAS[0][3] = "Aerolíneas Arg. Buenos Aires, Buenos Aires, Argentina - Jorge Newbery" #descripcion
+    AEROLINEAS[0][4] = "314" # codigo de pais
+
+    # codAerolinea = 2
+    AEROLINEAS[1][0] = "2"
+    AEROLINEAS[1][1] = "Aerolineas Argentinas"
+    AEROLINEAS[1][2] = "ROS"
+    AEROLINEAS[1][3] = "Rosario, Santa Fe, Argentina - Fisherton"
+    AEROLINEAS[1][4] = "314"
+
+    # codAerolinea = 3
+    AEROLINEAS[1][0] = "codigo"
+    AEROLINEAS[1][1] = "nombre"
+    AEROLINEAS[1][2] = "codigoiata"
+    AEROLINEAS[1][3] = "descripcion"
+    AEROLINEAS[1][4] = "codigopais"
+
+# Procedimiento para precargar usuarios en el arreglo de Usuarios
+def CargaUsuarios(arregloCodigos,arregloUsuarios):#(Var arregloCodigos : codigos, Var arregloUsuarios : usuarios )
+    arregloCodigos [0][0] = 0 # Codigo de usuario
+    arregloUsuarios[0][0] = "Juan Carlos" #nombre de usuario
+    arregloUsuarios[0][1] = "admin123" #clave
+    arregloUsuarios[0][2] = "Administrador" #tipo de usuario
+    arregloUsuarios[0][3] = "juancarlos@hotmail.com" #email
+    arregloUsuarios[0][4] = "31548" #telefono
+
+    arregloCodigos [1][0] = 1 # Codigo de usuario
+    arregloUsuarios[1][0] = "Pedro Perez" #nombre de usuario
+    arregloUsuarios[1][1] = "ceo123" #clave
+    arregloUsuarios[1][2] = "Ceo" #tipo de usuario
+    arregloUsuarios[1][3] = "pedro@hotmail.com" #email
+    arregloUsuarios[1][4] = "155321" #telefono
+
+    arregloCodigos [2][0] = 2 # Codigo de usuario
+    arregloUsuarios[2][0] = "Mariana Martinez" #nombre de usuario
+    arregloUsuarios[2][1] = "ceo123" #clave
+    arregloUsuarios[2][2] = "Ceo" #tipo de usuario
+    arregloUsuarios[2][3] = "Mariana@hotmail.com" #email
+    arregloUsuarios[2][4] = "43252" #telefono
+
+    arregloCodigos [3][0] = 3 # Codigo de usuario
+    arregloUsuarios[3][0] = "Lola Pompa" #nombre de usuario
+    arregloUsuarios[3][1] = "ceo123" #clave
+    arregloUsuarios[3][2] = "Ceo" #tipo de usuario
+    arregloUsuarios[3][3] = "lola@hotmail.com" #email
+    arregloUsuarios[3][4] = "6541" #telefono
+
+    arregloCodigos [4][0] = 4 # Codigo de usuario
+    arregloUsuarios[4][0] = "Sabrina Lopez" #nombre de usuario
+    arregloUsuarios[4][1] = "ceo123" #clave
+    arregloUsuarios[4][2] = "Ceo" #tipo de usuario
+    arregloUsuarios[4][3] = "sabri@hotmail.com" #email
+    arregloUsuarios[4][4] = "1253" #telefono
+
+    arregloCodigos [5][0] = 5 # Codigo de usuario
+    arregloUsuarios[5][0] = "Brian Garcia" #nombre de usuario
+    arregloUsuarios[5][1] = "ceo123" #clave
+    arregloUsuarios[5][2] = "Ceo" #tipo de usuario
+    arregloUsuarios[5][3] = "brian@hotmail.com" #email
+    arregloUsuarios[5][4] = "41321" #telefono
+
+    arregloCodigos [6][0] = 6 # Codigo de usuario
+    arregloUsuarios[6][0] = "Usuario 6" #nombre de usuario
+    arregloUsuarios[6][1] = "ceo123" #clave
+    arregloUsuarios[6][2] = "Ceo" #tipo de usuario
+    arregloUsuarios[6][3] = "usuario6@hotmail.com" #email
+    arregloUsuarios[6][4] = "652342" #telefono
+
+    #arregloCodigos [7][0] = 7 # Codigo de usuario
+    #arregloUsuarios[7][0] = "Usuario 7" #nombre de usuario
+    #arregloUsuarios[7][1] = "usuario123" #clave
+    #arregloUsuarios[7][2] = "Usuarios" #tipo de usuario
+    #arregloUsuarios[7][3] = "usuario7@hotmail.com" #email
+    #arregloUsuarios[7][4] = "52434" #telefono
+
+    #arregloCodigos [8][0] = 8 # Codigo de usuario
+    #arregloUsuarios[8][0] = "Usuario 8" #nombre de usuario
+    #arregloUsuarios[8][1] = "usuario123" #clave
+    #arregloUsuarios[8][2] = "Usuarios" #tipo de usuario
+    #arregloUsuarios[8][3] = "usuario8@hotmail.com" #email
+    #arregloUsuarios[8][4] = "12345" #telefono
+
+    #arregloCodigos [9][0] = 9 # Codigo de usuario
+    #arregloUsuarios[9][0] = "Usuario 9" #nombre de usuario
+    #arregloUsuarios[9][1] = "usuario123" #clave
+    #arregloUsuarios[9][2] = "Usuarios" #tipo de usuario
+    #arregloUsuarios[9][3] = "usuario9@hotmail.com" #email
+    #arregloUsuarios[9][4] = "54321" #telefono
+
+    # (Usuario prueba ingreso facil) Comentar o borrar al entregar cambiar por los usuarios de arriba
+
+    arregloCodigos [7][0] = 7 # Codigo de usuario
+    arregloUsuarios[7][0] = "a" #nombre de usuario
+    arregloUsuarios[7][1] = "a" #clave
+    arregloUsuarios[7][2] = "Administrador" #tipo de usuario
+    arregloUsuarios[7][3] = "a" #email
+    arregloUsuarios[7][4] = "52434" #telefono
+
+    arregloCodigos [8][0] = 8 # Codigo de usuario
+    arregloUsuarios[8][0] = "c" #nombre de usuario
+    arregloUsuarios[8][1] = "c" #clave
+    arregloUsuarios[8][2] = "Ceo" #tipo de usuario
+    arregloUsuarios[8][3] = "c" #email
+    arregloUsuarios[8][4] = "12345" #telefono
+
+    arregloCodigos [9][0] = 9 # Codigo de usuario
+    arregloUsuarios[9][0] = "u" #nombre de usuario
+    arregloUsuarios[9][1] = "u" #clave
+    arregloUsuarios[9][2] = "Usuarios" #tipo de usuario
+    arregloUsuarios[9][3] = "u" #email
+    arregloUsuarios[9][4] = "54321" #telefono
+
+# Procedimiento mostrarGestionDeAerolineas
+def mostrarGestionDeAerolineas():
+    #limpiarPantalla()
+    #print ("---  Gestión de Aerolíneas  ---\n")
+    #print ("a) Crear Aerolínea")
+    #print ("b) Modificar Aerolínea")
+    #print ("c) Eliminar Aerolínea")
+    #print ("d) Volver")
+    msj = "\n---  Gestión de Aerolíneas  ---\na) Crear Aerolínea\nb) Modificar Aerolínea\nc) Eliminar Aerolínea\nd) Volver\n"
+    return msj
+# Procedimiento gestionDeAerolineas
+def gestionDeAerolineas(USR,AERO,COD,VUELO):
+    mensaje = mostrarGestionDeAerolineas()
+    opcionDeGestion = validarOpcion(mensaje,"a","d")
+    while opcionDeGestion != 'd':
+        if opcionDeGestion == 'a':
+            enConstruccion()
+            #crearAerolinea(USR,AERO,COD,VUELO)
+        elif opcionDeGestion == 'b':
+            enConstruccion()
+            #modificarAerolinea(USR,AERO,COD,VUELO)
+        elif opcionDeGestion == 'c':
+            enConstruccion()
+            #eliminarAerolinea(AERO,COD,VUELO)
+        mensaje = mostrarGestionDeAerolineas()
+        opcionDeGestion = validarOpcion(mensaje,"a","d")
+    #limpiarPantalla()  
+
+# Funcion para mostrar el menu de administrador
+def mostrarMenuAdmin():
+    #print("------- Menú administrador -------\n")
+    #print("1. Gestión de Aerolíneas")
+    #print("2. Aprobar/Denegar Promociones")
+    #print("3. Gestión de Novedades")
+    #print("4. Reportes")
+    #print("5. Salir")
+    msj = "\n------- Menú administrador -------\n1. Gestión de Aerolíneas\n2. Aprobar/Denegar Promociones\n3. Gestión de Novedades\n4. Reportes\n5. Salir"
+    return msj
+
+# Procedimiento menuAdmin 
+def menuAdmin(USR,AERO,COD,VUELO):
+    #limpiarPantalla()
+    mensaje = mostrarMenuAdmin()
+    submenu = validarOpcion(mensaje,"1","5")
+    limpiarPantalla()
+    while submenu != "5":
+        if submenu == "1":
+            gestionDeAerolineas(USR,AERO,COD,VUELO)
+            limpiarPantalla()
+        elif submenu == "3":
+            gestionDeNovedades()
+        elif submenu == "4":
+            #reportes()
+            enConstruccion()
+        else:
+            enConstruccion()
+        mensaje = mostrarMenuAdmin()
+        submenu = validarOpcion(mensaje,"1","5")
+        limpiarPantalla()
+
+def mostrarGestiondeVuelos():
+    print ("--- Gestión de Vuelos ---\n")
+    print ("a) Crear vuelo")
+    print ("b) Modificar vuelo")
+    print ("c) Eliminar vuelo")
+    print ("d) Volver")
+
+# Procedimiento listarMenuCeo      
+def mostrarMenuCeo ():
+    print ("--- Menú Ceo ---\n")
+    print ("1) Gestión de Vuelos")
+    print ("    a) Crear vuelo")
+    print ("    b) Modificar vuelo")
+    print ("    c) Eliminar vuelo")
+    print ("    d) Volver ") 
+    print ("2) Gestión de Promociones")
+    print("     a. Crear Promoción")
+    print("     b. Modificar Promoción")
+    print("     c. Eliminar Promoción")
+    print("     d. Volver")
+    print ("3) Reportes")
+    print("     a. Reporte de ventas de mi Aerolínea")
+    print("     b. Reporte de ocupación de Vuelos de mi Aerolínea")
+    print("     c. Volver")
+    print ("4) Cerrar sesión")
+
+def crearVuelo(USR,AERO,COD,VUELO):
+    limpiarPantalla()
+    cantidadVuelos = 0
+    mensaje = "Desea ver los vuelos cargados hasta el momento?"
+    if aceptarCancelar(mensaje, "a", "c") == "a" :
+        print("Se muestra la lista de vuelos cargados hasta el momento")
+        #verVuelos(USR,AERO,COD,VUELO)
+    else:
+        limpiarPantalla() # SI no quiere que se muestre limpia pantalla y pide cargar
+    cantidadVuelos = 0
+    opc = "a"
+    print("Ingresar los datos del nuevo vuelo: \n")
+
+    busca = False
+    #while cantidadVuelos < 20 and opc == "a":
+    mensaje = "Ingresar el código de aerolínea"
+    codAerolinea = str(input("Ingrese el código de la aerolínea ó D para salir: "))
+    while aceptarCancelar(mensaje, "a", "D") == "a" or cantidadVuelos < 20:
+
+        #while (buscarAerolinea(codAerolinea, AERO) == True and opc == "a") :
+        while (busca == True or opc == "a") :    
+            if buscarDicotomica(AERO, codAerolinea) == False:
+                limpiarPantalla()
+                print("Código de aerolínea no encontrado. Ingrese un código válido: ")
+                mensaje = "Código de aerolínea no encontrado.\nDesea ingresar un nuevo código de aerolínea?"
+                if aceptarCancelar(mensaje, "a", "c") == "a" :
+                    codAerolinea = str(input("Ingrese el código de la aerolínea: "))
+                    buscarDicotomica(AERO, codAerolinea)
+
+            else:
+                limpiarPantalla()
+                print("Código de aerolínea encontrado. Puede continuar con la carga del vuelo.")
+                # Se pide el resto de los datos del vuelo
+                origenVuelo = str(input("Ingrese el origen del vuelo: "))
+                destinoVuelo = str(input("Ingrese el destino del vuelo: "))
+                fechaSalidaVuelo = str(input("Ingrese la fecha de salida del vuelo (DD/MM/AAAA): "))
+                horaSalidaVuelo = str(input("Ingrese la hora de salida del vuelo (HH:MM): "))
+                precioVuelo = float(input("Ingrese el precio del vuelo: "))
+                # Se crea el vuelo y se agrega al arreglo de vuelos
+                print("Vuelo creado exitosamente")
+        mensaje = "Ingresar un nuevo código de ó D para salir: "
+        aceptarCancelar(mensaje, "a", "D")
+ # Estructura entidad VUELOS 100 filas 8 columna
+        # codVuelo int              array codigos_vuelos
+        # asientosDisponibles int
+        # codAerolinea STR 5        array vuelos
+        # origenVuelo STR 50
+        # destinoVuelo STR 50
+        # fechaSalidaVuelo STR 10
+        # horaSalidaVuelo STR 5
+        # precioVuelo DECIMAL       array precio_vuelos
+          
+def gestiondeVuelos(USR,AERO,COD,VUELO):
+    limpiarPantalla()
+    mostrarGestiondeVuelos ()
+    submenu = validarOpcion ("a", "d")
+    while submenu != "d":
+        if submenu == "a":
+            crearVuelo(USR,AERO,COD,VUELO)
+        elif submenu == "b":
+            enConstruccion ()
+            #modificarVuelo(USR,AERO,COD,VUELO)
+        elif submenu == "c":
+            enConstruccion ()
+            #eliminarVuelo(USR,AERO,COD,VUELO)
+        mostrarMenuCeo ()
+        submenu = validarOpcion ("a", "d")
+    
+# Procedimiento MenuCeo
+def menuCeo (USR,AERO,COD,VUELO):
+    mostrarMenuCeo ()
+    submenu = validarOpcion ("1", "4")
+
+    while submenu != "4":
+        if submenu == "1": # Gestion de Vuelos
+            gestiondeVuelos(USR,AERO,COD,VUELO)
+        elif submenu == "2": # Gestion de Promociones
+            enConstruccion ()
+        elif submenu == "3": # Reportes
+            enConstruccion ()
+        mostrarMenuCeo ()
+        submenu = validarOpcion("1", "4")
+
+# Procedimiento listarMenuCliente   
+def mostrarMenuUsuarios ():
+    print ("--- Menú usuarios ---\n")
+    print("1. Buscar Vuelos")
+    print("2. Buscar asientos")
+    print("3. Reservar Vuelos")
+    print("4. Gestionar Reservas")
+    print("     a. Consultar Reservas")
+    print("     b. Cancelar/Confirmar Reservas")
+    print("     c. Volver")
+    print("5. Ver Historial de Compras (reservas con estado “confirmada”)")
+    print("6. Ver Novedades")
+    print("7. Cerrar sesión")   
+
+# Procedimiento MenuUsuarios 
+def menuUsuarios():
+    mostrarMenuUsuarios()
+    submenu =validarOpcion ("1", "7")
+    while submenu != "7":
+        if submenu == "1":
+            enConstruccion()            
+        elif submenu == "2":
+            enConstruccion()
+        elif submenu == "3":
+            enConstruccion()
+        elif submenu == "4":
+            enConstruccion()
+        elif submenu == "5":
+            enConstruccion()
+        elif submenu == "6":
+            enConstruccion()
+        mostrarMenuUsuarios()
+        submenu = validarOpcion ("1", "7")
+
+# Procedimiento mostrar menu segun tipo de usuario ingresado
+def menuTipo(USR, AERO, COD, VUELO, pos):
+    global codUsuario
+    codUsuario = pos
+    #limpiarPantalla()
+    if USR[pos][2] == "Administrador":
+        print(f"\n{USR[pos][0]}\nBienvenido al sistema de gestión de aerolíneas\n")
+        menuAdmin(USR,AERO,COD,VUELO)
+        limpiarPantalla()
+        input("Cerrando programa. Enter para salir")
+        codUsuario = -1
+    if USR[pos][2] == "Ceo":
+        print(f"\n{USR[pos][0]}\nBienvenido al sistema de gestión de aerolíneas\n")
+        menuCeo(USR,AERO,COD,VUELO)
+    if USR[pos][2] == "Usuarios":
+        print(f"\n{USR[pos][0]}\nBienvenido al sistema de gestión de aerolíneas\n")
+        menuUsuarios() 
+
+# Procedimiento para sección en construccion
+def enConstruccion():
+    limpiarPantalla()
+    #print("\nEn Construcción...\n")
+    print("\033[93m\nEn Construcción\n\033[0m")  # Amarillo
+
+# Función Valida Acceso
+def ValidaAcceso(usuario, contra, arreglo):
+    i = 0
+    while i < 10:
+        if usuario == arreglo[i][0] and contra == arreglo[i][1]:
+            pos = i
+            i = 10
+        else:
+            pos = -1
+            i = i + 1
+    if pos == -1:
+        limpiarPantalla()
+        print("Usuario y/o contraseña incorrectos")
+    return pos
+
+#def mostrarInicio():
+#    limpiarPantalla()
+#    print("1. Registrarme\n2. Iniciar Sesión (login en el sistema)\n0. Salir\n")
+
+# Funcion para mostrar el inicio del programa. Devuelve el mensaje
+def mostrarInicio():
+    limpiarPantalla()
+    inicio = "1. Registrarme\n2. Iniciar Sesión (login en el sistema)\n0. Salir\n"
+    return inicio
+
+
+# Procedimiento Iniciar sesion
+def iniciarSesion(U):
+    limpiarPantalla()
+    global codUsuario
+    intentos = 0   
+    while codUsuario == -1 and intentos < 3:
+        user = str(input("Ingrese usuario: "))
+        longMaxUsu = 100
+        longUser = len(user)
+        while longUser > longMaxUsu:
+            print("Error: excede longitud de caracteres")
+            user = str(input("Ingrese usuario: "))
+            longUser = len(user)
+        password = str(pwinput("Ingrese contraseña: "))
+        codUsuario = ValidaAcceso(user, password, U) #U arreglo usuarios
+        intentos = intentos + 1
+
+    if codUsuario == -1:
+        print("Acceso incorrecto")
+        limpiarPantalla()
+    else:
+        limpiarPantalla()
+        print("Acceso correcto")
+
+# Programa Principal
+def programaPrincipal():
+    # Se declaran los arreglos
+    # CODIGOS = ARREGLO DE INT [0...99][0...1] INT
+    CODIGOS_USUARIOS = [None] * 99
+    for f in range(99):
+        CODIGOS_USUARIOS[f] = [0] * 1 
+    # USUARIOS = ARREGLO DE STRING [0...99][0...6] STRING
+    USUARIOS = [None] * 99
+    for f in range(99):
+        USUARIOS[f] = [""] * 6
+
+    # AEROLINEAS = ARREGLO DE STRING [0...49][0...5] STRING
+    AEROLINEAS = [None] * 49
+    for f in range(49):
+        AEROLINEAS[f] = [""] * 5
+
+    # CODIGO_VUELOS = ARREGLO DE INT [0...99][0...2] INT
+    CODIGOS_VUELOS = [None] * 99
+    for f in range(99):
+        CODIGOS_VUELOS[f] = [0] * 2 # para codigo de vuelo y cantidad de asientos disponibles
+    # VUELOS = ARREGLO DE INT [0...99][0...5] STRING
+    VUELOS = [None] * 99
+    for f in range(99):
+        VUELOS[f] = [""] * 5
+    # PRECIO_VUELOS = ARREGLO DE INT [0...99][0...1] DECIMAL
+    PRECIO_VUELOS = [None] * 99
+    for f in range(99):
+        PRECIO_VUELOS[f] = [0,0] * 1
+    # ASIENTOS_VUELOS = ARREGLO DE INT [0...99][0...2] INT
+    ASIENTOS_VUELOS = [None] * 99
+    for f in range(99):
+        ASIENTOS_VUELOS[f] = [0] * 2 # para codigo de vuelo y cantidad de asientos
+
+    CargaUsuarios(CODIGOS_USUARIOS, USUARIOS)
+    # Estructura entidad USUARIOS 100 filas 6 columnas
+        # codUsuario int        array codigo_usuarios
+        # nombreUsuario STR 100 
+        # claveUsuario STR 8    array usuarios
+        # tipoUsuario STR 20    
+        # emailUsuario STR 100  
+        # telefonoUsuario STR 20
+    precargarAerolineas(AEROLINEAS)
+    # Estructura de AEROLINEAS 50 filas 5 columnas
+        # codAerolinea  STR 5
+        # nombreAerolínea STR 100
+        # codigoIATA STR 3
+        # descripcionAeroliena STR 200
+        # codPais STR 3
+      
+    # Estructura entidad VUELOS 100 filas 8 columna
+        # codVuelo int              array codigos_vuelos
+        # asientosDisponibles int
+        # codAerolinea STR 5        array vuelos
+        # origenVuelo STR 50
+        # destinoVuelo STR 50
+        # fechaSalidaVuelo STR 10
+        # horaSalidaVuelo STR 5
+        # precioVuelo DECIMAL       array precio_vuelos
+
+    # aca habria que ordenar los arreglos de aerolineas y codigos para las busquedas dicotomicas. O hacer busqueda secuencial  borrar  
+    #ordenarArreglos(ARREGLO,CODIGOS)
+    
+    #mostrarInicio()
+    mensaje = mostrarInicio()
+    opcion = validarOpcion(mensaje,"0","2")
+    # Menu principal
+    while opcion != "-1":
+        if opcion == "1": #Registrarse
+            limpiarPantalla()
+            enConstruccion()
+            input("Enter para seguir: ")
+            mensaje = mostrarInicio()
+            opcion = validarOpcion(mensaje,"0","2")
+        #Iniciar Sesion
+        elif opcion == "2":
+            inicioSesion=True
+            while inicioSesion == True:
+                global codUsuario
+                #Nota: Aca se mostraria acceso correcto
+                iniciarSesion(USUARIOS)
+                if codUsuario != -1:
+                    menuTipo(USUARIOS, AEROLINEAS,CODIGOS_VUELOS, VUELOS, codUsuario)
+                    limpiarPantalla()
+                    # Si el usuario es administrador, se cierra el programa
+                    if codUsuario == -1:
+                        inicioSesion = False
+                        opcion = "-1"
+                        intentos = 3
+                    ## Si el operador es Ceo o Usuario, se le pregunta si desea iniciar sesión con otro usuario
+                    else:
+                        mensaje = "\nIniciar sesion."
+                        if aceptarCancelar(mensaje, "a", "c") == "a":
+                            codUsuario = -1
+                        else:    
+                            inicioSesion=False
+                            codUsuario = -1
+                            mostrarInicio()
+                            opcion = validarOpcion("0","2")
+                else :
+                    print("3 intentos de acceso fallidos. El programa se cerrará.\nPresione enter para salir")
+                    input()
+                    inicioSesion=False
+                    opcion = "-1"
+        elif opcion == "0": # Salir
+            limpiarPantalla()
+            mensaje ="Seguro desea cerrar el programa?"
+            if aceptarCancelar(mensaje, "a", "c") == "a":
+                limpiarPantalla()    
+                opcion = "-1"
+            else:
+                mostrarInicio()
+                opcion = validarOpcion("0","2")
+
+
+# Declaración de la variable global codUsuario
+codUsuario = -1
+### EJECUCION ###
+programaPrincipal()
